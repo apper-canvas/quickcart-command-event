@@ -18,12 +18,12 @@ function Layout() {
     loadInitialData();
   }, []);
 
-  const loadInitialData = async () => {
+const loadInitialData = async () => {
     try {
       setLoading(true);
       const [productsData, cartData, wishlistData] = await Promise.all([
         productService.getAll(),
-        cartService.getAll(),
+        cartService.getCart(),
         wishlistService.getAll(),
       ]);
       
