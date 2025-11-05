@@ -1,19 +1,25 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useAuth } from "@/layouts/Root";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import Badge from "@/components/atoms/Badge";
 import SearchBar from "@/components/molecules/SearchBar";
-
 const Header = ({ cartItemCount = 0, onSearch }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, isAuthenticated } = useSelector(state => state.user);
+  const { logout } = useAuth();
 
-  const navItems = [
+const navItems = [
     { label: "Home", path: "/", icon: "Home" },
     { label: "Orders", path: "/orders", icon: "Package" },
   ];
 
+  const handleLogout = async () => {
+    await logout();
+  };
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -55,7 +61,7 @@ const Header = ({ cartItemCount = 0, onSearch }) => {
               ))}
             </nav>
 
-            {/* Cart Icon */}
+{/* Cart Icon */}
             <div className="relative">
               <Button
                 variant="ghost"
@@ -73,6 +79,41 @@ const Header = ({ cartItemCount = 0, onSearch }) => {
                 )}
               </Button>
             </div>
+
+            {/* User Authentication */}
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-600 hidden md:inline">
+                  Welcome, {user?.firstName || 'User'}
+                </span>
+                <Button
+                  variant="ghost"
+                  onClick={handleLogout}
+                  size="sm"
+                >
+                  <ApperIcon name="LogOut" size={16} className="mr-2" />
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="ghost"
+                  onClick={() => navigate("/login")}
+                  size="sm"
+                >
+                  <ApperIcon name="LogIn" size={16} className="mr-2" />
+                  Login
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={() => navigate("/signup")}
+                  size="sm"
+                >
+                  Sign Up
+                </Button>
+              </div>
+            )}
           </div>
         </div>
 
